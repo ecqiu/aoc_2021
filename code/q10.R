@@ -20,30 +20,27 @@ brack_pair=function(c){
 
 
 check_str=function(str){
-
-open_char=''
-for(i in 1:nchar(str)){
-  # print(open_char)
-  c=substr(str,i,i)
-  # print(c)
-  
-  if(c %in% c('(','[','{','<')){
-    open_char=c(c,open_char)
-  }
-  
-  
-  if(c %in% c(')',']','}','>')){
-    if(brack_pair(c)==open_char[1]){
-      open_char=open_char[-1]
-    }else{
-      return(c)
+  open_char=''
+  for(i in 1:nchar(str)){
+    # print(open_char)
+    c=substr(str,i,i)
+    # print(c)
+    
+    if(c %in% c('(','[','{','<')){
+      open_char=c(c,open_char)
     }
     
+    
+    if(c %in% c(')',']','}','>')){
+      if(brack_pair(c)==open_char[1]){
+        open_char=open_char[-1]
+      }else{
+        return(c)
+      }
+      
+    }
   }
-}
-
-return('x')
-
+  return('x')
 }
 
 #10.1
@@ -57,7 +54,6 @@ out[,index:=1:.N]
 incomp_strs=test[out[score==0,]$index]
 
 check_str2=function(str){
-  
   open_char=''
   for(i in 1:nchar(str)){
     # print(open_char)
@@ -82,9 +78,9 @@ check_str2=function(str){
   return(open_char)
   
 }
-check_str2(incomp_strs[3])
+# check_str2(incomp_strs[3])
 
-complete_strs=lapply(incomp_strs$V1,check_str2)
+incomp_leftover=lapply(incomp_strs$V1,check_str2)
 
 score_str=function(str){
   str=str[1:(length(str)-1)]
@@ -99,4 +95,4 @@ score_str=function(str){
   
   return(sum(replace*str))
 }
-median(unlist(lapply(complete_strs,score_str)))
+median(unlist(lapply(incomp_leftover,score_str)))
