@@ -9,8 +9,6 @@ sum(nchars %in%c(2,4,3,7))
 
 
 # #8.2
-
-
 decode=function(str){
   decode_map=as.list(c('a','b','c','d','e','f','g'))
   names(decode_map)=c('a','b','c','d','e','f','g')
@@ -41,15 +39,12 @@ decode=function(str){
 digit_map=as.list(0:9)
 names(digit_map)=c('abcefg','cf','acdeg','acdfg','bcdf','abdfg','abdefg','acf','abcdefg','abcdfg')
 for(i in 1:nrow(test)){
-
   decode_map=decode(test$V1[i])
   str2=test$V2[i]
   
   decoded_strings=unlist(lapply(strsplit(paste(unlist(decode_map[strsplit(str2,split='')[[1]]]),collapse=''),split=' ')[[1]],
          function(x) paste0(sort(unlist(strsplit(x,''))),collapse='')
   ))
-  
-  
   
   test[i,val:=as.numeric(paste0(unlist(digit_map[decoded_strings]),collapse=''))]
 }
