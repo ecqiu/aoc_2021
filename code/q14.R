@@ -49,7 +49,7 @@ start_table[,pair:=paste0(V1,shift(V1,type='lead'))]
 start_pairs=start_table[1:(nrow(start_table)-1),.N,by=pair]
 
 
-
+#do updates at pair level instead
 update_poly_pairs=function(pair_table){
   out_table=data.table(
     pair=unique(c(rules$out1,rules$out2,pair_table$pair)),
@@ -69,13 +69,15 @@ update_poly_pairs=function(pair_table){
   return(out_table)
 
 }
-
+#loop 40 times
 start_pair2=copy(start_pairs)
 for(i in 1:40){
   print(i)
   start_pair2=update_poly_pairs(start_pair2)
 }
 
+
+#was double counting all the letters except start+end letters, so add 1 to double count start/end letters
 start_pair2[,`:=`(l1=substr(pair,1,1),l2=substr(pair,2,2))]
 
 
