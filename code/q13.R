@@ -84,7 +84,7 @@ for(i in 1:nrow(instros)){
   }
 }
 
-
+#13.2
 star_mat_base=copy(star_mat)
 star_mat[]='.'
 
