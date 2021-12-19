@@ -31,7 +31,7 @@ while(length(zone)==0){
 plausible_y=0
 init_y=0
 
-for(init_y in 0:1000){
+for(init_y in 0:(-y1)){
   y_pos=time*init_y-time*(time-1)/2
   if(any(y_pos[zone]>=y1 &y_pos[zone]<=y2)){
     plausible_y=init_y
@@ -47,7 +47,7 @@ max(y_pos)
 can_list=list()
 list_i=1
 for(init_x in 18:x2){
-  for(init_y in y1:1000){#1000 is hacky, should work out max y such that forced to overshoot 
+  for(init_y in y1:(-y1)){#capped at -y1, because if initial upward velocity Y, when reach y=0 again, will have vert velocity -Y
     x_pos=ifelse(time<=init_x,time*init_x - time*(time-1)/2, init_x*init_x - init_x*(init_x-1)/2)
     zone=which(x_pos>=x1&x_pos<=x2)
     y_pos=time*init_y-time*(time-1)/2
