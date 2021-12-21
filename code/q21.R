@@ -56,7 +56,12 @@ for(i in 1:3){for(j in 1:3){for(k in 1:3){
 }}}
 dt_counts=dt_map[,.N,by=x][order(-x)]
 
+mem_x<<-list()
 enumerate_player_outcomes=function(p1_pos,score=0){
+  if(paste0(p1_pos,'_',score) %in% names(mem_x)){
+    return(mem_x[[paste0(p1_pos,'_',score)]])
+  }
+  
   out_list=list()
   if(score>=21){
     # return(-1)
@@ -81,6 +86,7 @@ enumerate_player_outcomes=function(p1_pos,score=0){
   #   out_list[[(i-1)*9+(j-1)*3+k]]=lapply(temp_list[[val_lookup]],function(x) c(rolls,x))
   # }}}
   out_list=rbindlist(out_list)[,.(n_perms=sum(n_perms)),by=l]
+  mem_x[[paste0(p1_pos,'_',score)]]<<-out_list
   return(out_list)
 }
 
