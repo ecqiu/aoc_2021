@@ -46,6 +46,8 @@ while(p1_score<1000 & p2_score<1000){
 d_roll*p2_score
 
 
+
+#21.2
 dt_map=data.table(i=1:27)
 for(i in 1:3){for(j in 1:3){for(k in 1:3){
   ind=(i-1)*9+(j-1)*3+k
@@ -53,10 +55,6 @@ for(i in 1:3){for(j in 1:3){for(k in 1:3){
   dt_map[ind,x:=val]
 }}}
 dt_counts=dt_map[,.N,by=x][order(-x)]
-
-
-#21.2
-return:n_perms
 
 enumerate_player_outcomes=function(p1_pos,score=0){
   out_list=list()
