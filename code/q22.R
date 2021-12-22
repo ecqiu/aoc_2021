@@ -95,7 +95,7 @@ for(i in 1:nrow(instrs)){
     }
     
     if(nrow(cube_list_minus)>0){
-    for(j in 1:nrow(cube_list_minus)){#if input =off, subtract plus, add minus only ([1]-1=0, [0]-0=0)
+    for(j in 1:nrow(cube_list_minus)){
       cube2=cube_list_minus[j,]
 
       x1=max(cube2$x1,row$x1)
@@ -121,7 +121,7 @@ for(i in 1:nrow(instrs)){
     
   }
   
-  if(row$instr=='off'){
+  if(row$instr=='off'){#if input =off, subtract plus, add minus only ([1]-1=0, [0]-0=0)
     # ons=ons+(row$x2-row$x1+1)*(row$y2-row$y1+1)*(row$z2-row$z1+1)
 
     cube_list_minus_new=data.table()
