@@ -1,25 +1,17 @@
 library(data.table)
-# instrs=fread('/home/eqiu/code_projects/aoc_2021/data/input_19',header=F)
 
+#preprocessing
 beacons=fread('/home/eqiu/code_projects/aoc_2021/data/input_19',header=F,fill=T)
-
-
 beacons[,new_beac:=0]
 beacons[substr(V1,1,3)=='---',new_beac:=1]
 beacons[,beac_num:=cumsum(new_beac)-1]
-
-
 beac2=beacons[is.finite(as.numeric(substr(V1,nchar(V1),nchar(V1)))),.(V1,beac_num)]
-
 beacs3=beac2[,tstrsplit(V1,split=',')]
 beacs3[,beac_num:=beac2$beac_num]
-# storage.mode(beacs3)='numeric'
-
-beacs3
 
 
 #19.1
-##list all permuates
+##list all permutations
 permutes=as.matrix(expand.grid(3:1,3:1,3:1))
 permutes=permutes[rowSums(permutes)==6,]
 permutes=permutes[c(1:3,5:7),]
@@ -52,6 +44,7 @@ match_scanners=function(s1_beacs,s2_beacs){
   s1_dists=get_dists(s1_beacs)
   s2_dists=get_dists(s2_beacs)
   
+  #do a quick L1 test for plausible beacon matches
   dists1=lapply(s1_dists,function(x) rowSums(abs(x)))
   dists2=lapply(s2_dists,function(x) rowSums(abs(x)))
   
@@ -66,6 +59,7 @@ match_scanners=function(s1_beacs,s2_beacs){
   s1_dists[[4]]
   s2_dists[[1]]
   
+  #matching beacons have to match on L1, otherwise can give up immediately
   if(test1<12){
     return(list(is_match=F))
   }
@@ -73,14 +67,14 @@ match_scanners=function(s1_beacs,s2_beacs){
   
   possib_uv=index_lookup[(possible_matches),]
   # s2_dists_temp=list()
-  for(i in 1:48){
+  for(i in 1:48){#all permutations
     perm_mat=permute_mat[(3*(i-1)+1):(3*i),]
     sim_vec=list()
-    if(det(perm_mat)==-1){
+    if(det(perm_mat)==-1){#but not the reflections
       next
     }
     
-    for(q in 1:nrow(possib_uv)){
+    for(q in 1:nrow(possib_uv)){#only need to check plausible matches from L1
       u=possib_uv[q,]$u
       v=possib_uv[q,]$v
       M1=setkey(data.table(s1_dists[[u]]))
@@ -94,21 +88,8 @@ match_scanners=function(s1_beacs,s2_beacs){
       }
     }
     if(length(sim_vec)>=12){
-      # print('hooray')
       return(list(sim_vec=sim_vec,n_same=length(sim_vec),perm_mat=perm_mat,is_match=T))
     }
-    
-    # for(u in 1:length(s1_dists)){
-    #   if((length(sim_vec)+length(s1_dists)-u+1) <12){
-    #     next
-    #   }
-    #   n_max=0
-    #   for(v in 1:length(s2_dists)){
-    #     
-    #   }
-    #   
-    #   
-    # }
     
   }
   
@@ -175,7 +156,7 @@ match_scanners=function(s1_beacs,s2_beacs){
 #   ,553,889,-390
 # ),nrow=3))
 
-#find matches
+#find matches between scanners
 match_list=list()
 n_overlap=0
 for(i in 0:(max(beacs3$beac_num)-1)){
@@ -198,9 +179,6 @@ to_map_list=names(match_list)
 zero_map=list()
 zero_map[['0']]=list(mat=diag(3),trans=matrix(c(0,0,0),ncol=3))
 out_beac_list=data.table(beacs3[beac_num==0,.(as.numeric(V1),as.numeric(V2),as.numeric(V3))])
-out_beac_list
-
-max_m_dist=0
 while(length(to_map_list)>0){
   n=to_map_list[1]
   print(n)
@@ -210,9 +188,11 @@ while(length(to_map_list)>0){
   if(!(s1 %in% names(zero_map))){
     
     if(!(s2 %in% names(zero_map))){
+      #if no beacon in paired skip for later
       to_map_list=c(to_map_list[-1],to_map_list[1])
       next
     }
+    #reversy beacon if second beacon mapped
     new_n=paste0(s2,'_',s1)
     match_list[[new_n]]=list(sim_vec=lapply(match_list[[n]]$sim_vec,function(x) x[2:1]),perm_mat=solve(match_list[[n]]$perm_mat))
     match_list[[n]]=NULL
@@ -224,26 +204,24 @@ while(length(to_map_list)>0){
   beacsx_1=as.matrix(beacs3[beac_num==as.numeric(s2),.(as.numeric(V1),as.numeric(V2),as.numeric(V3))])
   
 
-  beacsx_1%*%match_list[[n]]$perm_mat
+  # beacsx_1%*%match_list[[n]]$perm_mat
+  # beacsx_1[match_list[[n]]$sim_vec[[1]][2],]%*%match_list[[n]]$perm_mat+trans_rel
   
-  beacsx_1[match_list[[n]]$sim_vec[[1]][2],]%*%match_list[[n]]$perm_mat+trans_rel
-  
+  #get translation from 1 to 2
   trans_rel=beacsx_0[match_list[[n]]$sim_vec[[1]][1],]-beacsx_1[match_list[[n]]$sim_vec[[1]][2],]%*%match_list[[n]]$perm_mat
   
-  
-  
+  #get translation from s2 to 0 beacon
   zero_map[[s2]]=list(mat=match_list[[n]]$perm_mat%*%zero_map[[s1]]$mat,trans=trans_rel%*%zero_map[[s1]]$mat+zero_map[[s1]]$trans)
   
-
-  
+  #add s2 beacons to beaocn list
   s2_beac_rel_list=data.table(sweep(beacsx_1%*%zero_map[[s2]]$mat,2,-zero_map[[s2]]$trans))
-  # s2_beac_rel_list
-  
-  
   out_beac_list=rbind(out_beac_list,s2_beac_rel_list)
-  out_beac_list=unique(out_beac_list)
-  print(nrow(out_beac_list))
   
+  #dedup becaons
+  out_beac_list=unique(out_beac_list)
+  # print(nrow(out_beac_list))
+  
+  #remove scanner entry
   to_map_list=to_map_list[-1]
 }
 
