@@ -174,30 +174,30 @@ for(i in 1:nrow(instrs)){
   
   
   
-  # if(nrow(cube_list_plus)>0){
-  #   cube_list_plus=cube_list_plus[,.(n=sum(n)),by=.(x1,x2,y1,y2,z1,z2)]
-  #   cp_size=cube_list_plus[,sum((x2-x1+1)*(y2-y1+1)*(z2-z1+1)*n)]
-  # }else{
-  #   cp_size=0
-  # }
-  # 
-  # if(nrow(cube_list_minus)>0){
-  #   cube_list_minus=cube_list_minus[,.(n=sum(n)),by=.(x1,x2,y1,y2,z1,z2)]
-  #   cm_size=cube_list_minus[,sum((x2-x1+1)*(y2-y1+1)*(z2-z1+1)*n)]
-  # }else{
-  #   cm_size=0
-  # }
-  # 
-  # # if(nrow(cube_list_minus)>0&nrow(cube_list_plus)>0){
-  # #   cube_list_plus[,key:=paste0(x1,'_',x2,'_',y1,'_',y2,'_',z1,'_',z2)]
-  # #   cube_list_minus[,key:=paste0(x1,'_',x2,'_',y1,'_',y2,'_',z1,'_',z2)]
-  # #   
-  # #   inter_keys=intersect(cube_list_plus$key,cube_list_minus$key)
-  # #   cube_list_plus[]
-  # #   
-  # # }
+  if(nrow(cube_list_plus)>0){
+    cube_list_plus=cube_list_plus[,.(n=sum(n)),by=.(x1,x2,y1,y2,z1,z2)]
+    # cp_size=cube_list_plus[,sum((x2-x1+1)*(y2-y1+1)*(z2-z1+1)*n)]
+  }else{
+    # cp_size=0
+  }
+  
+  if(nrow(cube_list_minus)>0){
+    cube_list_minus=cube_list_minus[,.(n=sum(n)),by=.(x1,x2,y1,y2,z1,z2)]
+    # cm_size=cube_list_minus[,sum((x2-x1+1)*(y2-y1+1)*(z2-z1+1)*n)]
+  }else{
+    # cm_size=0
+  }
+  
+  # if(nrow(cube_list_minus)>0&nrow(cube_list_plus)>0){
+  #   cube_list_plus[,key:=paste0(x1,'_',x2,'_',y1,'_',y2,'_',z1,'_',z2)]
+  #   cube_list_minus[,key:=paste0(x1,'_',x2,'_',y1,'_',y2,'_',z1,'_',z2)]
   #   
-  # 
+  #   inter_keys=intersect(cube_list_plus$key,cube_list_minus$key)
+  #   cube_list_plus[]
+  #   
+  # }
+    
+  
   # print(cp_size-cm_size)
   # print(nrow(cube_list_plus))
   # print(nrow(cube_list_minus))
