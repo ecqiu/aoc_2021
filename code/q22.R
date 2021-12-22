@@ -95,7 +95,7 @@ for(i in 1:nrow(instrs)){
     }
     
     if(nrow(cube_list_minus)>0){
-    for(j in 1:nrow(cube_list_minus)){#if input =on, subtract plus, add minus only ([1]-1=0, [0]-0=0)
+    for(j in 1:nrow(cube_list_minus)){#if input =off, subtract plus, add minus only ([1]-1=0, [0]-0=0)
       cube2=cube_list_minus[j,]
 
       x1=max(cube2$x1,row$x1)
