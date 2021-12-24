@@ -1,6 +1,13 @@
 library(data.table)
 monad=fread('/home/eqiu/code_projects/aoc_2021/data/input_24',header=F,fill=T)
 
+##
+#need to read input and understand it's in 14 blocks of 1+17lines (1input).
+#the 17 lines don't differ, except the numbers in input 4,5 and 15
+#update_reg2 in comments below shows how the function works
+#can manually invert the function to find solutions for input z, for a given input w+output z (x,y inputs are ignored by the function)
+#for loop manually inverts below, and dedup to find largest(part1)/smallest(part2) output z for any given input z
+##
 lookup=data.table(ind=1:14)
 for(i in 1:14){
   inp_ind=(i-1)*18+1
