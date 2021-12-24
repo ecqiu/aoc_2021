@@ -70,7 +70,7 @@ for(i in 14:1){
   
   print(length(digit_list[[i]][[1]]))
 }
-
+print(digit_list[[1]][[2]])
 
 # update_reg2=function(reg,i){
 #   w=reg$w
